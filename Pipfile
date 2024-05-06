@@ -10,6 +10,7 @@ boto3 = "*"
 setuptools = "*"
 polygon-api-client = "*"
 python-dotenv = "*"
+pyyaml = "*"
 
 [dev-packages]
 

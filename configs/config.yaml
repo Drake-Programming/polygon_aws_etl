@@ -1,0 +1,16 @@
+s3:
+source:
+target:
+logging:
+  version: 1
+  formatters:
+    polygon:
+      format: "Polygon Transformer [%(asctime)s] %(levelname)s: %(name)s [Line: %(lineno)d]: %(message)s"
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: polygon
+      level: INFO
+  root:
+    level: INFO
+    handlers: [console]
