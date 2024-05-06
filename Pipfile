@@ -11,6 +11,7 @@ setuptools = "*"
 polygon-api-client = "*"
 python-dotenv = "*"
 pyyaml = "*"
+black = "*"
 
 [dev-packages]
 

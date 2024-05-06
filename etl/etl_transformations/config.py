@@ -8,7 +8,6 @@ class ETLSourceConfig:
     """
 
 
-
 @dataclass
 class ETLTargetConfig:
     """
