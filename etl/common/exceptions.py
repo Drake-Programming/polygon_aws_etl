@@ -18,3 +18,9 @@ class WrongFileFormatException(BasePolygonException):
 
     def __repr__(self):
         return f"file format {self.file_format} not supported"
+
+
+class WrongMetaFileException(BasePolygonException):
+    """
+    exception that can be raised when the meta file format is not correct.
+    """

@@ -25,7 +25,7 @@ class BaseBucketConnector(unittest.TestCase):
         :param bucket: s3 bucket name
         """
         self._logger = logging.getLogger(__name__)
-        self._endpoint_url = endpoint_url
+        self.endpoint_url = endpoint_url
         self.session = boto3.Session(
             aws_access_key_id=os.environ[access_key_name],
             aws_secret_access_key=os.environ[secret_access_key_name],
