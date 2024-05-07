@@ -18,23 +18,59 @@ class TargetBucketConnector(BaseBucketConnector):
     csv_format = S3FileFormats.CSV.value
     parquet_format = S3FileFormats.PARQUET.value
 
-    def read_csv_to_df(
-        self, key: str, encoding: str = "utf-8", sep: str = ","
-    ) -> pd.DataFrame:
+    def __init__(
+        self, access_key_name, secret_access_key_name, endpoint_url, bucket_name
+    ):
+        super().__init__(
+            access_key_name, secret_access_key_name, endpoint_url, bucket_name
+        )
+
+    def read_meta_file(self, decoding="utf-8"):
         """
-        Read a csv file from the s3 bucket and return a dataframe
-        :param key:
-        :param encoding:
-        :param sep:
-        :return: pd.DataFrame
+        Retrieves meta file from s3 bucket
+        :param decoding: decoding codes
+        :return: meta file in dataframe, returns empty dataframe if meta file does not exists
         """
         self._logger.info(
-            "Reading file %s/%s/%s", self._endpoint_url, self._bucket.name, key
+            f"Reading meta file at {self.endpoint_url}/{self._bucket.name}/{self.meta_key}"
         )
-        csv_obj = self._bucket.Object(key=key).get().get("Body").read().decode(encoding)
-        data = StringIO(csv_obj)
-        data_frame = pd.read_csv(data, sep=sep)
-        return data_frame
+        try:
+            csv_obj = (
+                self._bucket.Object(key=self.meta_key)
+                .get()
+                .get("Body")
+                .read()
+                .decode(decoding)
+            )
+            data = StringIO(csv_obj)
+            df = pd.read_csv(data)
+        # if there is not meta file, return an empty dataframe with specified columns
+        except self.session.client("s3").exceptions.NoSuchKey:
+            df = pd.DataFrame(columns=[self.meta_date_col, self.meta_timestamp_col])
+        return df
+
+    def read_object(self, key: str, file_format: str, decoding="utf-8"):
+        """
+        read in an s3 object as a pandas dataframe
+        used as a caching layer when input date exists in meta file
+
+        :param key: object key
+        :param file_format: object file format, support csv or parquet
+        :param decoding: file decoding for csv files
+
+        returns:
+            a dataframe
+        """
+        self._logger.info(f"reading file {self.endpoint_url}/{self._bucket.name}/{key}")
+        if file_format == self.csv_format:
+            csv_obj = (
+                self._bucket.Object(key=key).get().get("Body").read().decode(decoding)
+            )
+            df = pd.read_csv(StringIO(csv_obj))
+        if file_format == self.parquet_format:
+            parquet_obj = self._bucket.Object(key=key).get().get("Body").read()
+            df = pd.read_parquet(BytesIO(parquet_obj))
+        return df
 
     def write_df_to_s3(
         self, data_frame: pd.DataFrame, key: str, file_format: str

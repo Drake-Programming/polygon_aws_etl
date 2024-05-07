@@ -8,6 +8,9 @@ class SourcePolygonConnector(BasePolygonConnector):
     interface to source api: polygon.io
     """
 
+    def __init__(self, key: str):
+        super.__init__(key)
+
     def get_stocks(
         self, start_date, end_date, tickers: List[str], timespan: str = "hour"
     ) -> Dict:
