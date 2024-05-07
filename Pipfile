@@ -12,6 +12,7 @@ polygon-api-client = "*"
 python-dotenv = "*"
 pyyaml = "*"
 black = "*"
+requests = "*"
 
 [dev-packages]
 

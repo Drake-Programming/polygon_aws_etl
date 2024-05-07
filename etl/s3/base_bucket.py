@@ -6,7 +6,7 @@ import unittest
 
 class BaseBucketConnector(unittest.TestCase):
     """
-    base class for source and target bucket
+    base class for target bucket
     """
 
     def __init__(
