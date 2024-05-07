@@ -1,6 +1,15 @@
 s3:
+  trg_endpoint_url: "https://s3.amazonaws.com"
+  trg_bucket: "adaptivesharks-test-etl-target"
+  access_key_name: "aws_access_key"
+  secret_access_key_name: "aws_secret_access_key"
 source:
+  src_input_date: "2021-09-14"
+  src_input_date_format: "%Y-%m-%d"
 target:
+  trg_prefix: "daily/"
+  trg_key_date_format: "%Y%m%d"
+  trg_format: "parquet"
 logging:
   version: 1
   formatters:
