@@ -60,7 +60,7 @@ class MetaFile:
             datetime.today().strftime(MetaFileConfig.META_TIMESTAMP_FORMAT.value)
         ]
         try:
-            # If meta file exists -> union DataFrame of old and new meta data is created
+            # If meta file exists -> union DataFrame of old and new metadata is created
             df_old = bucket_connector.read_meta_file()
             if collections.Counter(df_old.columns) != collections.Counter(
                 df_new.columns
@@ -77,3 +77,12 @@ class MetaFile:
             file_format=MetaFileConfig.META_FILE_FORMAT.value,
         )
         return True
+
+    @staticmethod
+    def date_in_meta_file(date: str, bucket_connector: TargetBucketConnector):
+        """
+        if a date has been stored in the metafile
+        """
+        meta_df = bucket_connector.read_meta_file()
+        existing_dates = (meta_df[MetaFileConfig.META_DATE_COL.value]).tolist()
+        return date in existing_dates

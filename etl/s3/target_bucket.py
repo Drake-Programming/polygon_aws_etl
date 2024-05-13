@@ -1,10 +1,17 @@
-import pandas as pd
-from io import StringIO, BytesIO
-from typing import Union
-from etl.s3.base_bucket import BaseBucketConnector
-from etl.common.constants import MetaFileConfig, S3FileFormats
-from etl.common.exceptions import WrongFileFormatException
-import re
+import pandas as pd  # to create and manipulate with dataframes
+from io import StringIO, BytesIO  # read from and write to strings or bytes
+from typing import Union  # to display the "or" value in typing
+from etl.s3.base_bucket import (
+    BaseBucketConnector,
+)  # class for connecting to a s3 bucket
+from etl.common.constants import (
+    MetaFileConfig,
+    S3FileFormats,
+)  # config names and formats for columns and files
+from etl.common.exceptions import (
+    WrongFileFormatException,
+)  # an exception that takes in a file format to display
+import re  # provides support for working with regular expressions
 
 
 class TargetBucketConnector(BaseBucketConnector):
@@ -22,7 +29,7 @@ class TargetBucketConnector(BaseBucketConnector):
     prefix = "daily/"
 
     def __init__(
-            self, access_key_name, secret_access_key_name, endpoint_url, bucket_name
+        self, access_key_name, secret_access_key_name, endpoint_url, bucket_name
     ):
         super().__init__(
             access_key_name, secret_access_key_name, endpoint_url, bucket_name
@@ -31,8 +38,9 @@ class TargetBucketConnector(BaseBucketConnector):
     def read_meta_file(self, decoding="utf-8"):
         """
         Retrieves meta file from s3 bucket
+
         :param decoding: decoding codes
-        :return: meta file in dataframe, returns empty dataframe if meta file does not exists
+        :returns: meta file in dataframe, returns empty dataframe if meta file does not exists
         """
         self._logger.info(
             f"Reading meta file at {self.endpoint_url}/{self._bucket.name}/{self.meta_key}"
@@ -60,37 +68,27 @@ class TargetBucketConnector(BaseBucketConnector):
         :param key: object key
         :param file_format: object file format, support csv or parquet
         :param decoding: file decoding for csv files
-
-        returns:
-            a dataframe
+        :returns: a dataframe
         """
-        self._logger.info(
-            f'reading file {self.endpoint_url}/{self._bucket.name}/{key}')
+        self._logger.info(f"reading file {self.endpoint_url}/{self._bucket.name}/{key}")
         if file_format == self.csv_format:
-            csv_obj = self._bucket.Object(key=key) \
-                .get() \
-                .get("Body") \
-                .read() \
-                .decode(decoding)
+            csv_obj = (
+                self._bucket.Object(key=key).get().get("Body").read().decode(decoding)
+            )
             df = pd.read_csv(StringIO(csv_obj))
             return df
         if file_format == self.parquet_format:
-            parquet_obj = self._bucket.Object(key=key) \
-                .get() \
-                .get("Body") \
-                .read()
+            parquet_obj = self._bucket.Object(key=key).get().get("Body").read()
             df = pd.read_parquet(BytesIO(parquet_obj))
             return df
         else:
-            self._logger.info(
-                f'File format is not correct, needs to be CSV or PARQUET')
+            self._logger.info(f"File format is not correct, needs to be CSV or PARQUET")
 
     def list_existing_dates(self):
         """
         list dates whose polygon data has been loaded to target bucket
 
-        returns:
-            a list of dates, without target prefix
+        :returns: a list of dates, without target prefix
         """
 
         existing_keys = [
@@ -105,10 +103,11 @@ class TargetBucketConnector(BaseBucketConnector):
         return existing_dates
 
     def write_to_s3(
-            self, df: pd.DataFrame, key: str, file_format: str
+        self, df: pd.DataFrame, key: str, file_format: str
     ) -> Union[bool, None]:
         """
         write a dataframe to S3
+
         supported formats: .csv, .parquet
         :param file_format: saving format
         :param df: the dataframe that should be written

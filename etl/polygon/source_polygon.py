@@ -11,6 +11,14 @@ class SourcePolygonConnector(BasePolygonConnector):
     def __init__(self, key: str):
         super.__init__(key)
 
+    @staticmethod
+    def dict_to_df(dict_stock: Dict):
+        dataframes = []
+        for ticker, data in dict_stock.items():
+            df = pd.DataFrame(data).assign(ticker=ticker)
+            dataframes.append(df)
+        return pd.concat(dataframes, ignore_index=True)
+
     def get_stocks(
         self, start_date, end_date, tickers: List[str], timespan: str = "hour"
     ) -> Dict:
@@ -25,10 +33,3 @@ class SourcePolygonConnector(BasePolygonConnector):
                 limit=50000,
             )
         return stock_objects
-
-    def _dict_to_df(self, dict_stock: Dict):
-        dataframes = []
-        for ticker, data in dict_stock.items():
-            df = pd.DataFrame(data).assign(ticker=ticker)
-            dataframes.append(df)
-        return pd.concat(dataframes, ignore_index=True)
