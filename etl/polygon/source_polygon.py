@@ -1,6 +1,9 @@
 from etl.polygon.base_polygon import BasePolygonConnector
 from typing import List, Dict
 import pandas as pd
+from datetime import datetime
+
+today_date = datetime.today().strftime("%Y-%m-%d")
 
 
 class SourcePolygonConnector(BasePolygonConnector):
@@ -9,10 +12,10 @@ class SourcePolygonConnector(BasePolygonConnector):
     """
 
     def __init__(self, key: str):
-        super.__init__(key)
+        super().__init__(key)
 
     @staticmethod
-    def dict_to_df(dict_stock: Dict):
+    def _dict_to_df(dict_stock: Dict):
         dataframes = []
         for ticker, data in dict_stock.items():
             df = pd.DataFrame(data).assign(ticker=ticker)
@@ -20,7 +23,11 @@ class SourcePolygonConnector(BasePolygonConnector):
         return pd.concat(dataframes, ignore_index=True)
 
     def get_stocks(
-        self, start_date, end_date, tickers: List[str], timespan: str = "hour"
+        self,
+        start_date,
+        tickers: List[str],
+        end_date=today_date,
+        timespan: str = "hour",
     ) -> Dict:
         stock_objects = {}
         for stock in tickers:
@@ -32,4 +39,4 @@ class SourcePolygonConnector(BasePolygonConnector):
                 to=end_date,
                 limit=50000,
             )
-        return stock_objects
+        return self._dict_to_df(stock_objects)

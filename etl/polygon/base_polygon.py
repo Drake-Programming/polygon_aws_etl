@@ -2,6 +2,10 @@ import os
 import unittest
 import logging
 from polygon import RESTClient
+from dotenv import load_dotenv, find_dotenv
+
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
 
 
 class BasePolygonConnector(unittest.TestCase):
@@ -11,6 +15,7 @@ class BasePolygonConnector(unittest.TestCase):
 
     def __init__(
         self,
-        key: str,
+        str_key: str,
     ):
-        self._client = RESTClient(key)
+        self._polygon_key = os.getenv(str_key)
+        self._client = RESTClient(self._polygon_key)

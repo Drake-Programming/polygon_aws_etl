@@ -32,4 +32,4 @@ class MetaFileConfig(Enum):
     META_DATE_COL = "date"
     META_TIMESTAMP_COL = "processing_time"
     META_FILE_FORMAT = "csv"
-    META_KEY = "meta.csv"
+    META_KEY = "meta_file.csv"

@@ -84,5 +84,5 @@ class MetaFile:
         if a date has been stored in the metafile
         """
         meta_df = bucket_connector.read_meta_file()
-        existing_dates = (meta_df[MetaFileConfig.META_DATE_COL.value]).tolist()
+        existing_dates = meta_df[MetaFileConfig.META_DATE_COL.value].tolist()
         return date in existing_dates

@@ -30,19 +30,19 @@ def main() -> None:
     trg_bucket = TargetBucketConnector(
         s3_config["access_key_name"],
         s3_config["secret_access_key_name"],
-        s3_config["trg_endpoint_url"],
-        s3_config["trg_bucket"],
+        s3_config["trg_bucket"]
+
     )
 
     src_config = ETLSourceConfig(**config["source"])
     trg_config = ETLTargetConfig(**config["target"])
-    logger.info(f"polygon job started for {src_config.src_col_date}")
+    logger.info(f"polygon job started for {src_config.src_input_date}")
     etl = ETL(
         src_polygon, trg_bucket, MetaFileConfig.META_KEY.value, src_config, trg_config
     )
     # running etl job for polygon report
     df = etl.run()
-    logger.info(f"polygon job finished for {src_config.src_col_date}")
+    logger.info(f"polygon job finished for {src_config.src_input_date}")
     print(
         f"transformed dataframe saved to target bucket {s3_config['trg_bucket']}, example: "
     )

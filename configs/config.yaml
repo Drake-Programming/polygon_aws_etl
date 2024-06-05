@@ -1,13 +1,33 @@
 s3:
-  trg_endpoint_url: "https://s3.amazonaws.com"
   trg_bucket: "adaptivesharks-test-etl-target"
   access_key_name: "aws_access_key"
   secret_access_key_name: "aws_secret_access_key"
 polygon:
-  polygon_key:
+  polygon_key: "polygon_api_key"
 source:
-  src_input_date: "2021-09-14"
+  src_input_date: "2024-06-01"
   src_input_date_format: "%Y-%m-%d"
+  src_columns:
+    [
+      'open',
+      'high',
+      'low',
+      'close',
+      'volume',
+      'vwap',
+      'timestamp',
+      'transaction',
+      'otc',
+      'ticker'
+    ]
+  src_col_time: 'timestamp'
+  src_col_open: 'open'
+  src_col_high: 'high'
+  src_col_low: 'low'
+  src_col_close: 'close'
+  src_col_volume: 'volume'
+  src_col_vwap: 'vwap'
+  src_col_ticker: 'ticker'
 target:
   trg_prefix: "daily/"
   trg_key_date_format: "%Y%m%d"

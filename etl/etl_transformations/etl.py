@@ -1,6 +1,7 @@
 from etl.polygon.source_polygon import SourcePolygonConnector
 from etl.s3.target_bucket import TargetBucketConnector
 from etl.etl_transformations.config import ETLTargetConfig, ETLSourceConfig
+from etl.meta.meta_file import MetaFile
 
 import logging
 import pandas as pd
@@ -38,12 +39,51 @@ class ETL:
         self.input_date = self.src_args.src_input_date
         self.input_date_format = self.src_args.src_input_date_format
 
-        def extract(self):
-            """
-            read the source data and concatenates them into one panda dataframe
+    def extract(self):
+        """
+        read the source data and concatenates them into one panda dataframe
 
-            :returns: a tuple with two elements
-                1. df: the extracted dataframe
-                2. transformed: should the dataframe been transformed
-            """
-            self._logger.info("extracting polygon source data")
+        :returns: a tuple with two elements
+            1. df: the extracted dataframe
+            2. transformed: should the dataframe been transformed
+        """
+        self._logger.info("extracting polygon source data")
+        if MetaFile.date_in_meta_file(self.input_date, self.trg_bucket):
+            self._logger.info(
+                "input date exists in meta file, reading from target bucket"
+            )
+            key = (
+                f"{self.trg_args.trg_prefix}"
+                f"{datetime.strptime(self.input_date, self.input_date_format).strftime(self.trg_args.trg_key_date_format)}."
+                f"{self.trg_args.trg_format}"
+            )
+            df = self.trg_bucket.read_object(key, self.trg_args.trg_format)
+            self._logger.info("read data from target bucket")
+            return df, True
+        else:
+            self._logger.info(
+                "input date does not exist in meta file, reading from source bucket"
+            )
+            df = self.src_polygon.get_stocks(self.input_date, ['AAPL', 'TSLA'])
+            self._logger.info("extracted data from source polygon")
+            return df, False
+
+    def transform(self, df: pd.DataFrame, transformed=False):
+        if transformed:
+            self._logger.info("transformed dataframe, skip transformation")
+            return df, True
+
+        return df, False
+
+    def load(self, df: pd.DataFrame, loaded=False):
+        if loaded:
+            self._logger.info("dataframe has been loaded or is empty, skip loading")
+            return df
+        else:
+            return df
+
+    def run(self):
+        df, transformed = self.extract()
+        df, loaded = self.transform(df, transformed)
+        df = self.load(df, loaded)
+        return df
