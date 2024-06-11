@@ -7,6 +7,7 @@ from etl.etl_transformations.etl import ETL
 from etl.etl_transformations.config import ETLSourceConfig, ETLTargetConfig
 from etl.polygon.source_polygon import SourcePolygonConnector
 from etl.s3.target_bucket import TargetBucketConnector
+import pandas as pd
 
 
 def main() -> None:
@@ -46,6 +47,7 @@ def main() -> None:
     print(
         f"transformed dataframe saved to target bucket {s3_config['trg_bucket']}, example: "
     )
+    pd.set_option('display.max_columns', 1000)
     print(df.head())
     return df
 

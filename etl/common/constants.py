@@ -29,7 +29,7 @@ class MetaFileConfig(Enum):
 
     META_DATE_FORMAT = "%Y-%m-%d"
     META_TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
-    META_DATE_COL = "date"
+    META_DATE_COL = "source_date"
     META_TIMESTAMP_COL = "processing_time"
     META_FILE_FORMAT = "csv"
     META_KEY = "meta_file.csv"

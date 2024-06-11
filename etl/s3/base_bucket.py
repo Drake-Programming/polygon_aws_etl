@@ -32,7 +32,5 @@ class BaseBucketConnector(unittest.TestCase):
             aws_secret_access_key=os.getenv(secret_access_key_name),
         )
 
-        self._s3 = self.session.resource(
-            service_name="s3"
-        )
+        self._s3 = self.session.resource(service_name="s3")
         self._bucket = self._s3.Bucket(bucket_name)

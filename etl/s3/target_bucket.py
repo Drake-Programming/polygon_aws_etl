@@ -1,9 +1,16 @@
 import pandas as pd  # to create and manipulate with dataframes
 from io import StringIO, BytesIO  # read from and write to strings or bytes
 from typing import Union  # to display the "or" value in typing
-from etl.s3.base_bucket import BaseBucketConnector  # class for connecting to a s3 bucket
-from etl.common.constants import MetaFileConfig, S3FileFormats  # config names and formats for columns and files
-from etl.common.exceptions import WrongFileFormatException  # an exception that takes in a file format to display
+from etl.s3.base_bucket import (
+    BaseBucketConnector,
+)  # class for connecting to a s3 bucket
+from etl.common.constants import (
+    MetaFileConfig,
+    S3FileFormats,
+)  # config names and formats for columns and files
+from etl.common.exceptions import (
+    WrongFileFormatException,
+)  # an exception that takes in a file format to display
 import re  # provides support for working with regular expressions
 
 
@@ -21,12 +28,8 @@ class TargetBucketConnector(BaseBucketConnector):
 
     prefix = "daily/"
 
-    def __init__(
-            self, access_key_name, secret_access_key_name, bucket_name
-    ):
-        super().__init__(
-            access_key_name, secret_access_key_name, bucket_name
-        )
+    def __init__(self, access_key_name, secret_access_key_name, bucket_name):
+        super().__init__(access_key_name, secret_access_key_name, bucket_name)
 
     def read_meta_file(self, decoding="utf-8"):
         """
@@ -50,11 +53,13 @@ class TargetBucketConnector(BaseBucketConnector):
             df = pd.read_csv(data)
         # if there is no meta file, return an empty dataframe with specified columns
         except self.session.client("s3").exceptions.NoSuchKey:
-            self._logger.error('Failed to retrieve meta file, returning dataframe with specified columns')
+            self._logger.error(
+                "Failed to retrieve meta file, returning dataframe with specified columns"
+            )
             df = pd.DataFrame(columns=[self.meta_date_col, self.meta_timestamp_col])
 
         except Exception as e:
-            self._logger.error(f'Could not read meta file: {e}')
+            self._logger.error(f"Could not read meta file: {e}")
             df = pd.DataFrame(columns=[self.meta_date_col, self.meta_timestamp_col])
         return df
 
@@ -68,7 +73,9 @@ class TargetBucketConnector(BaseBucketConnector):
         :param decoding: file decoding for csv files
         :returns: a dataframe
         """
-        self._logger.info(f"Reading meta file '{self.meta_key}' in bucket '{self._bucket.name}'")
+        self._logger.info(
+            f"Reading meta file '{self.meta_key}' in bucket '{self._bucket.name}'"
+        )
         if file_format == self.csv_format:
             csv_obj = (
                 self._bucket.Object(key=key).get().get("Body").read().decode(decoding)
@@ -101,7 +108,7 @@ class TargetBucketConnector(BaseBucketConnector):
         return existing_dates
 
     def write_to_s3(
-            self, df: pd.DataFrame, key: str, file_format: str
+        self, df: pd.DataFrame, key: str, file_format: str
     ) -> Union[bool, None]:
         """
         write a dataframe to S3
@@ -134,8 +141,6 @@ class TargetBucketConnector(BaseBucketConnector):
         :param key:
         :return:
         """
-        self._logger.info(
-            f"Writing file to {self._bucket.name} as {key}"
-        )
+        self._logger.info(f"Writing file to {self._bucket.name} as {key}")
         self._bucket.put_object(Body=out_buffer.getvalue(), Key=key)
         return True
