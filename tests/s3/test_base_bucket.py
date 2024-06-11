@@ -1,0 +1,2 @@
+class TestBaseBucketConnector:
+    pass

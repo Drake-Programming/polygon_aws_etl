@@ -15,7 +15,7 @@ class SourcePolygonConnector(BasePolygonConnector):
         super().__init__(key)
 
     @staticmethod
-    def _dict_to_df(dict_stock: Dict):
+    def _dict_to_df(dict_stock: Dict) -> pd.DataFrame:
         dataframes = []
         for ticker, data in dict_stock.items():
             df = pd.DataFrame(data).assign(ticker=ticker)

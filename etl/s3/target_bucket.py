@@ -1,6 +1,6 @@
 import pandas as pd  # to create and manipulate with dataframes
 from io import StringIO, BytesIO  # read from and write to strings or bytes
-from typing import Union  # to display the "or" value in typing
+from typing import Union, List  # to display the "or" value in typing
 from etl.s3.base_bucket import (
     BaseBucketConnector,
 )  # class for connecting to a s3 bucket
@@ -31,7 +31,7 @@ class TargetBucketConnector(BaseBucketConnector):
     def __init__(self, access_key_name, secret_access_key_name, bucket_name):
         super().__init__(access_key_name, secret_access_key_name, bucket_name)
 
-    def read_meta_file(self, decoding="utf-8"):
+    def read_meta_file(self, decoding="utf-8") -> pd.DataFrame:
         """
         Retrieves meta file from s3 bucket
 
@@ -63,7 +63,7 @@ class TargetBucketConnector(BaseBucketConnector):
             df = pd.DataFrame(columns=[self.meta_date_col, self.meta_timestamp_col])
         return df
 
-    def read_object(self, key: str, file_format: str, decoding: str = "utf-8"):
+    def read_object(self, key: str, file_format: str, decoding: str = "utf-8") -> pd.DataFrame:
         """
         read in a s3 object as a pandas dataframe
         used as a caching layer when input date exists in meta file
@@ -74,7 +74,7 @@ class TargetBucketConnector(BaseBucketConnector):
         :returns: a dataframe
         """
         self._logger.info(
-            f"Reading meta file '{self.meta_key}' in bucket '{self._bucket.name}'"
+            f"Reading file '{key}' in bucket '{self._bucket.name}'"
         )
         if file_format == self.csv_format:
             csv_obj = (
@@ -89,13 +89,13 @@ class TargetBucketConnector(BaseBucketConnector):
         else:
             self._logger.info(f"File format is not correct, needs to be CSV or PARQUET")
 
-    def list_existing_dates(self):
+    def list_existing_dates(self) -> List[str]:
         """
         list dates whose polygon data has been loaded to target bucket
 
         :returns: a list of dates, without target prefix
         """
-
+        self._logger.info('Reading existing dates')
         existing_keys = [
             obj.key for obj in self._bucket.objects.filter(Prefix=self.prefix)
         ]
@@ -119,7 +119,7 @@ class TargetBucketConnector(BaseBucketConnector):
         :param key: key of the saved file in s3
         """
         if df.empty:
-            self._logger.info("The dataframe is empty! No file will be written!")
+            self._logger.warning("The dataframe is empty! No file will be written!")
             return None
         if file_format == self.csv_format:
             out_buffer = StringIO()
@@ -130,7 +130,7 @@ class TargetBucketConnector(BaseBucketConnector):
             df.to_parquet(out_buffer, index=False)
             return self.put_object(out_buffer, key)
         self._logger.info(
-            f"file format {file_format} is not " "supported to be written to s3!"
+            f"file format {file_format} is not supported to be written to s3!"
         )
         raise WrongFileFormatException(file_format)
 

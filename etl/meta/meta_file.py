@@ -4,7 +4,10 @@ import pandas as pd
 from datetime import datetime
 from io import StringIO
 import collections
+import logging
 from etl.common.exceptions import WrongMetaFileException
+
+logger = logging.getLogger(__name__)
 
 
 class MetaFile:
@@ -15,7 +18,7 @@ class MetaFile:
     meta_key = MetaFileConfig.META_KEY.value
 
     @staticmethod
-    def create_meta_file(bucket_connector: TargetBucketConnector):
+    def create_meta_file(bucket_connector: TargetBucketConnector) -> bool:
         """
         create/update a meta file with all existing dates whose corresponding file has been uploaded to s3,
         set processing time to now
@@ -41,13 +44,14 @@ class MetaFile:
         return True
 
     @staticmethod
-    def update_meta_file(input_date: str, bucket_connector: TargetBucketConnector):
+    def update_meta_file(input_date: str, bucket_connector: TargetBucketConnector) -> bool:
         """
         update the meta file with the processed date and datetime.now() as processing time
 
         :param input_date: the processed date
         :param bucket_connector: a TargetBucketConnector instance in which the meta file will be updated
         """
+        logger.info(f'Updating meta file, inputting date {input_date}')
         # Creating an empty DataFrame using the meta file column names
         df_new = pd.DataFrame(
             columns=[
@@ -63,7 +67,7 @@ class MetaFile:
             # If meta file exists -> union DataFrame of old and new metadata is created
             df_old = bucket_connector.read_meta_file()
             if collections.Counter(df_old.columns) != collections.Counter(
-                df_new.columns
+                    df_new.columns
             ):
                 raise WrongMetaFileException
             df_all = pd.concat([df_old, df_new])
@@ -79,7 +83,7 @@ class MetaFile:
         return True
 
     @staticmethod
-    def date_in_meta_file(date: str, bucket_connector: TargetBucketConnector):
+    def date_in_meta_file(date: str, bucket_connector: TargetBucketConnector) -> str:
         """
         if a date has been stored in the metafile
         """

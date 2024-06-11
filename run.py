@@ -11,6 +11,7 @@ import pandas as pd
 
 
 def main() -> None:
+    #  setup YAML
     parser = argparse.ArgumentParser(description="run polygon etl job")
     parser.add_argument(
         "--config", help="a yaml configuration file", default="configs/config.yaml"
@@ -24,9 +25,11 @@ def main() -> None:
     logging.config.dictConfig(log_config)
     logger = logging.getLogger(__name__)
 
+    #  setup configs strings for source and target
     s3_config = config["s3"]
     polygon_config = config["polygon"]
 
+    #  Instantiate source connector and target bucket
     src_polygon = SourcePolygonConnector(polygon_config["polygon_key"])
     trg_bucket = TargetBucketConnector(
         s3_config["access_key_name"],
@@ -35,8 +38,11 @@ def main() -> None:
 
     )
 
+    #  setup dataclasses for source and target configs
     src_config = ETLSourceConfig(**config["source"])
     trg_config = ETLTargetConfig(**config["target"])
+
+    #  Instantiate ETL
     logger.info(f"polygon job started for {src_config.src_input_date}")
     etl = ETL(
         src_polygon, trg_bucket, MetaFileConfig.META_KEY.value, src_config, trg_config

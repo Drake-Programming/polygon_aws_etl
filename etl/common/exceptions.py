@@ -24,3 +24,9 @@ class WrongMetaFileException(BasePolygonException):
     """
     exception that can be raised when the meta file format is not correct.
     """
+
+
+class IncorrectColumns(Exception):
+    """
+    exception that can be raised if the target schema can't be applied to the dataframe being transformed
+    """
