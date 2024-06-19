@@ -1,12 +1,13 @@
 s3:
-  trg_bucket: "adaptivesharks-test-etl-target"
-  access_key_name: "aws_access_key"
-  secret_access_key_name: "aws_secret_access_key"
+  trg_bucket: 'adaptivesharks-test-etl-target'
+  access_key_name: 'aws_access_key'
+  secret_access_key_name: 'aws_secret_access_key'
+  s3_region: 'us-west-1'
 polygon:
-  polygon_key: "polygon_api_key"
+  polygon_key: 'polygon_api_key'
 source:
-  src_input_date: "2024-05-30"
-  src_input_date_format: "%Y-%m-%d"
+  src_input_date: '2024-05-30'
+  src_input_date_format: '%Y-%m-%d'
   src_columns:
     [
       'open',
@@ -30,9 +31,9 @@ source:
   src_col_otc: 'otc'
   src_col_transaction: 'transaction'
 target:
-  trg_prefix: "daily/"
-  trg_key_date_format: "%Y%m%d"
-  trg_format: "parquet"
+  trg_prefix: 'daily/'
+  trg_key_date_format: '%Y%m%d'
+  trg_format: 'parquet'
   trg_columns:
     [
       'stock_ticker',

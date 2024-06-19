@@ -18,6 +18,7 @@ class BaseBucketConnector(unittest.TestCase):
         access_key_name: str,
         secret_access_key_name: str,
         bucket_name: str,
+        bucket_region: str
     ):
         """
         Constructor for S3BucketConnector
@@ -32,5 +33,5 @@ class BaseBucketConnector(unittest.TestCase):
             aws_secret_access_key=os.getenv(secret_access_key_name),
         )
 
-        self._s3 = self.session.resource(service_name="s3")
+        self._s3 = self.session.resource(service_name="s3", region_name=bucket_region)
         self._bucket = self._s3.Bucket(bucket_name)

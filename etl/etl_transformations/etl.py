@@ -49,7 +49,7 @@ class ETL:
             1. df: the extracted dataframe
             2. transformed: should the dataframe been transformed
         """
-        self._logger.info("extracting polygon source data")
+        self._logger.info("extracting meta file from target bucket")
         if MetaFile.date_in_meta_file(self.input_date, self.trg_bucket):
             self._logger.info(
                 "input date exists in meta file, reading from target bucket"
@@ -181,7 +181,7 @@ class ETL:
             self._logger.info(f"Saved transformed data into target bucket {target_key}")
 
             # Updating meta file
-            self._logger.info(f'Attempting to update meta file {self.meta_key}')
+            self._logger.info(f"Attempting to update meta file {self.meta_key}")
             MetaFile.update_meta_file(self.input_date, self.trg_bucket)
             self._logger.info("Successfully updated meta file")
             return df

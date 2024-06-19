@@ -28,8 +28,8 @@ class TargetBucketConnector(BaseBucketConnector):
 
     prefix = "daily/"
 
-    def __init__(self, access_key_name, secret_access_key_name, bucket_name):
-        super().__init__(access_key_name, secret_access_key_name, bucket_name)
+    def __init__(self, access_key_name, secret_access_key_name, bucket_name, bucket_region):
+        super().__init__(access_key_name, secret_access_key_name, bucket_name, bucket_region)
 
     def read_meta_file(self, decoding="utf-8") -> pd.DataFrame:
         """
@@ -63,7 +63,9 @@ class TargetBucketConnector(BaseBucketConnector):
             df = pd.DataFrame(columns=[self.meta_date_col, self.meta_timestamp_col])
         return df
 
-    def read_object(self, key: str, file_format: str, decoding: str = "utf-8") -> pd.DataFrame:
+    def read_object(
+        self, key: str, file_format: str, decoding: str = "utf-8"
+    ) -> pd.DataFrame:
         """
         read in a s3 object as a pandas dataframe
         used as a caching layer when input date exists in meta file
@@ -73,9 +75,7 @@ class TargetBucketConnector(BaseBucketConnector):
         :param decoding: file decoding for csv files
         :returns: a dataframe
         """
-        self._logger.info(
-            f"Reading file '{key}' in bucket '{self._bucket.name}'"
-        )
+        self._logger.info(f"Reading file '{key}' in bucket '{self._bucket.name}'")
         if file_format == self.csv_format:
             csv_obj = (
                 self._bucket.Object(key=key).get().get("Body").read().decode(decoding)
@@ -95,7 +95,7 @@ class TargetBucketConnector(BaseBucketConnector):
 
         :returns: a list of dates, without target prefix
         """
-        self._logger.info('Reading existing dates')
+        self._logger.info("Reading existing dates")
         existing_keys = [
             obj.key for obj in self._bucket.objects.filter(Prefix=self.prefix)
         ]

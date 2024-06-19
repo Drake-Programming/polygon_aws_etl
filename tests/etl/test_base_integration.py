@@ -3,4 +3,6 @@ import unittest
 
 
 class IntegrationTestETL(TestBaseETL):
-    pass
+    """
+    integration unit tests for ETL, extract(), transform() and load()
+    """

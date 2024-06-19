@@ -34,7 +34,8 @@ def main() -> None:
     trg_bucket = TargetBucketConnector(
         s3_config["access_key_name"],
         s3_config["secret_access_key_name"],
-        s3_config["trg_bucket"]
+        s3_config["trg_bucket"],
+        s3_config['s3_region']
 
     )
 

@@ -36,20 +36,14 @@ class Utils:
         :return: bool
         """
         #  column check
-        missing_columns = [
-            col for col in trg_args.trg_columns if col not in df.columns
-        ]
-        extra_columns = [
-            col for col in df.columns if col not in trg_args.trg_columns
-        ]
+        missing_columns = [col for col in trg_args.trg_columns if col not in df.columns]
+        extra_columns = [col for col in df.columns if col not in trg_args.trg_columns]
         if not missing_columns and not extra_columns:
             logger.info("All expected columns are present")
             return True
         else:
             if missing_columns:
-                logger.warning(
-                    f"Missing columns in dataframe: {missing_columns}"
-                )
+                logger.warning(f"Missing columns in dataframe: {missing_columns}")
                 return False
             if extra_columns:
                 logger.warning(
