@@ -1,5 +1,5 @@
 from etl.common.exceptions import WrongMetaFileException
-from tests.s3.test_s3 import TestS3BucketConnector
+from tests.s3.test_base_bucket import TestBaseBucketConnector
 from etl.meta.meta_file import MetaFile
 from etl.common.constants import MetaFileConfig
 from datetime import datetime
@@ -7,7 +7,7 @@ import pandas as pd
 import unittest
 
 
-class TestMetaFile(TestS3BucketConnector):
+class TestMetaFile(TestBaseBucketConnector):
     """
     tests for the meta file
     """
@@ -42,7 +42,7 @@ class TestMetaFile(TestS3BucketConnector):
         )
         self.bucket.put_object(Body=df_report.to_csv(), Key=key)
         # list existing date (should be today)
-        existing_dates = self.trgBucketConnector.list_existing_dates()
+        existing_dates = self.trg_bucket_connector.list_existing_dates()
         df_expected = pd.DataFrame(
             columns=[self.meta_date_col, self.meta_timestamp_col]
         )
@@ -51,8 +51,8 @@ class TestMetaFile(TestS3BucketConnector):
             self.meta_timestamp_format
         )
         # method execution
-        MetaFile.create_meta_file(self.trgBucketConnector)
-        df_result = self.trgBucketConnector.read_meta_file()
+        MetaFile.create_meta_file(self.trg_bucket_connector)
+        df_result = self.trg_bucket_connector.read_meta_file()
         self.assertTrue(df_result.equals(df_expected))
 
     def test_update_meta_file(self):
@@ -69,8 +69,8 @@ class TestMetaFile(TestS3BucketConnector):
             }
         )
         # method execution
-        MetaFile.update_meta_file(self.test_date, self.trgBucketConnector)
-        df_result = self.trgBucketConnector.read_meta_file()
+        MetaFile.update_meta_file(self.test_date, self.trg_bucket_connector)
+        df_result = self.trg_bucket_connector.read_meta_file()
         self.assertTrue(df_result.equals(df_expected))
 
     def test_update_meta_file_meta_file_exists(self):
@@ -85,9 +85,9 @@ class TestMetaFile(TestS3BucketConnector):
         meta_content = f"{self.meta_date_col},{self.meta_timestamp_col}\n{date_old},{datetime.today().strftime(self.meta_timestamp_format)}"
         self.bucket.put_object(Body=meta_content, Key=self.meta_key)
         # method execution
-        MetaFile.update_meta_file(date_new, self.trgBucketConnector)
+        MetaFile.update_meta_file(date_new, self.trg_bucket_connector)
         # read meta file
-        df_result = self.trgBucketConnector.read_meta_file()
+        df_result = self.trg_bucket_connector.read_meta_file()
         dates_result = list(df_result[self.meta_date_col])
         self.assertEqual(dates_expected, dates_result)
 
@@ -105,15 +105,15 @@ class TestMetaFile(TestS3BucketConnector):
         self.bucket.put_object(Body=meta_content, Key=self.meta_key)
         # method execution
         with self.assertRaises(WrongMetaFileException):
-            MetaFile.update_meta_file(date_new, self.trgBucketConnector)
+            MetaFile.update_meta_file(date_new, self.trg_bucket_connector)
 
     def test_date_in_meta_file(self):
         """
         test date_in_meta_file works
         """
-        MetaFile.update_meta_file(self.test_date, self.trgBucketConnector)
-        result1 = MetaFile.date_in_meta_file(self.test_date, self.trgBucketConnector)
-        result2 = MetaFile.date_in_meta_file("2021-01-01", self.trgBucketConnector)
+        MetaFile.update_meta_file(self.test_date, self.trg_bucket_connector)
+        result1 = MetaFile.date_in_meta_file(self.test_date, self.trg_bucket_connector)
+        result2 = MetaFile.date_in_meta_file("2021-01-01", self.trg_bucket_connector)
         self.assertTrue(result1)
         self.assertFalse(result2)
 

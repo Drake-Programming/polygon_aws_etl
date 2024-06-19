@@ -6,7 +6,7 @@ import os
 import boto3
 from moto import mock_aws
 
-from etl.s3.base_bucket import BaseBucketConnector
+from etl.s3.target_bucket import TargetBucketConnector
 
 
 @mock_aws
@@ -16,34 +16,43 @@ class TestBaseBucketConnector(unittest.TestCase):
     """
 
     def setUp(self):
+        """
+        Setting up s3 environment
+        :return:
+        """
+        #  mock aws connection start
+        self.mock_aws = mock_aws()
+        self.mock_aws.start()
+        #  Defining the class arguments
         config = {
-            "access_key_name": "AWS_ACCESS_KEY",
-            "secret_access_key_name": "AWS_SECRET_ACCESS_KEY",
-            "bucket_name": "test-bucket",
-            "bucket_region": "us-west-1",
+            "s3_access_key": "AWS_ACCESS_KEY_ID",
+            "s3_secret_key": "AWS_SECRET_ACCESS_KEY",
+            "s3_bucket_name": "test_bucket",
+            "s3_bucket_location": "eu-central-1"
         }
-
-        # Set the environment variables for AWS credentials
-        os.environ[config["access_key_name"]] = "dummy_access_key"
-        os.environ[config["secret_access_key_name"]] = "dummy_secret_key"
-
-        #  Create s3 resource
-        self.conn = boto3.resource(
-            service_name="s3", region_name=config["bucket_region"]
+        #  Creating s3 access keys as environment variables
+        os.environ[config["s3_access_key"]] = "KEY1"
+        os.environ[config["s3_secret_key"]] = "KEY2"
+        #  Creating a bucket on the mocked s3
+        self.s3_conn = boto3.resource(service_name="s3")
+        self.s3_conn.create_bucket(
+            Bucket=config["s3_bucket_name"],
+            CreateBucketConfiguration={
+                "LocationConstraint": config["s3_bucket_location"]
+            },
         )
-
-        #  Create bucket with location constraint
-        self.conn.create_bucket(
-            Bucket=config["bucket_name"],
-            CreateBucketConfiguration={"LocationConstraint": config["bucket_region"]},
-        )
-
-        self.bucket = self.conn.Bucket(config["bucket_name"])
-
+        self.bucket = self.s3_conn.Bucket(config["s3_bucket_name"])
         #  Creating a testing instance
-        self.trg_bucket_connector = BaseBucketConnector(**config)
+        self.trg_bucket_connector = TargetBucketConnector(*config.values())
 
     def tearDown(self):
-        for key in self.bucket.objects.all():
-            key.delete()
-        self.bucket.delete()
+        """
+        Executing after unittests
+        :return:
+        """
+        #  mock aws connection stop
+        self.mock_aws.stop()
+
+
+if __name__ == "__main__":
+    unittest.main()
