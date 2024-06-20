@@ -28,7 +28,7 @@ class TestBaseBucketConnector(unittest.TestCase):
             "s3_access_key": "AWS_ACCESS_KEY_ID",
             "s3_secret_key": "AWS_SECRET_ACCESS_KEY",
             "s3_bucket_name": "test_bucket",
-            "s3_bucket_location": "eu-central-1"
+            "s3_bucket_location": "us-west-1",
         }
         #  Creating s3 access keys as environment variables
         os.environ[config["s3_access_key"]] = "KEY1"
