@@ -16,12 +16,12 @@ class ETL:
     """
 
     def __init__(
-            self,
-            source_polygon: SourcePolygonConnector,
-            target_bucket: TargetBucketConnector,
-            meta_key: str,
-            source_args: ETLSourceConfig,
-            target_args: ETLTargetConfig,
+        self,
+        source_polygon: SourcePolygonConnector,
+        target_bucket: TargetBucketConnector,
+        meta_key: str,
+        source_args: ETLSourceConfig,
+        target_args: ETLTargetConfig,
     ):
         """
         Constructor for Polygon ETL pipeline
@@ -66,12 +66,12 @@ class ETL:
             self._logger.info(
                 "input date does not exist in meta file, reading from source bucket"
             )
-            df = self.src_polygon.get_stocks(self.input_date, ["AAPL", "TSLA"])
+            df = self.src_polygon.get_stocks(self.input_date, self.src_args.src_tickers)
             self._logger.info("extracted data from source polygon")
             return df, False
 
     def transform(
-            self, df: pd.DataFrame, transformed=False
+        self, df: pd.DataFrame, transformed=False
     ) -> Tuple[pd.DataFrame, bool]:
         """
         Apply Transformations to Extracted Data
@@ -79,7 +79,7 @@ class ETL:
         :param transformed:
         :return:
         """
-        self._logger.info("Beginning transformation")
+        self._logger.debug("Beginning transformation")
         if transformed:
             self._logger.info("transformed dataframe, skip transformation")
             return df, True
@@ -99,9 +99,9 @@ class ETL:
         #  compute daily return
         self._logger.debug(f"Adding column {self.trg_args.trg_col_return}")
         df[self.trg_args.trg_col_return] = (
-                (df[self.src_args.src_col_close] - df[self.src_args.src_col_close].shift(1))
-                / df[self.src_args.src_col_close].shift(1)
-                * 100
+            (df[self.src_args.src_col_close] - df[self.src_args.src_col_close].shift(1))
+            / df[self.src_args.src_col_close].shift(1)
+            * 100
         )
         # Fill NaN with a specific value (e.g., 0)
         # df[self.trg_args.trg_col_return].fillna(0, inplace=True)
@@ -109,14 +109,14 @@ class ETL:
         #  compute daily volatility
         self._logger.debug(f"Adding column {self.trg_args.trg_col_volatility}")
         df[self.trg_args.trg_col_volatility] = (
-                (df[self.src_args.src_col_high] - df[self.src_args.src_col_low])
-                / df[self.src_args.src_col_open]
-                * 100
+            (df[self.src_args.src_col_high] - df[self.src_args.src_col_low])
+            / df[self.src_args.src_col_open]
+            * 100
         )
         #  compute intraday range
         self._logger.debug(f"Adding column {self.trg_args.trg_col_intraday_range}")
         df[self.trg_args.trg_col_intraday_range] = (
-                df[self.src_args.src_col_high] - df[self.src_args.src_col_low]
+            df[self.src_args.src_col_high] - df[self.src_args.src_col_low]
         )
 
         # timestamp to date

@@ -9,6 +9,7 @@ class ETLSourceConfig:
 
     src_input_date: str
     src_input_date_format: str
+    src_tickers: list
     src_columns: list
     src_col_timestamp: str
     src_col_open: str

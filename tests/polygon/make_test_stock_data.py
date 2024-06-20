@@ -29,7 +29,7 @@ class MockStockData:
         high_price = 195.2000
         low_price = 194.5800
         close_price = 194.8300
-        volume = 118043.0
+        volume = 118043
         vwap = 194.8244
         timestamp = 1717574400000  # Random UNIX timestamp in milliseconds
         transactions = 2422

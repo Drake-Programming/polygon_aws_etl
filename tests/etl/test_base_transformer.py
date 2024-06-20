@@ -55,6 +55,7 @@ class TestBaseETL(unittest.TestCase):
             "source": {
                 "src_input_date": "2024-05-30",
                 "src_input_date_format": "%Y-%m-%d",
+                "src_tickers": ["AAPL"],
                 "src_columns": [
                     "open",
                     "high",
@@ -63,7 +64,7 @@ class TestBaseETL(unittest.TestCase):
                     "volume",
                     "vwap",
                     "timestamp",
-                    "transaction",
+                    "transactions",
                     "ticker",
                 ],
                 "src_col_ticker": "ticker",
@@ -134,37 +135,13 @@ class TestBaseETL(unittest.TestCase):
                     195.2000,
                     194.5800,
                     194.8300,
-                    118043.0,
+                    118043,
                     194.8244,
                     1717574400000,
                     2422,
                     None,
                     "AAPL",
-                ],
-                [
-                    194.790,
-                    196.9000,
-                    194.6678,
-                    196.0200,
-                    21936159.0,
-                    195.6760,
-                    1717588800000,
-                    376029,
-                    None,
-                    "AAPL",
-                ],
-                [
-                    196.010,
-                    196.7000,
-                    195.5900,
-                    195.9000,
-                    22511239.0,
-                    196.0724,
-                    1717603200000,
-                    261315,
-                    None,
-                    "AAPL",
-                ],
+                ]
             ],
             columns=[
                 "open",
@@ -174,19 +151,13 @@ class TestBaseETL(unittest.TestCase):
                 "volume",
                 "vwap",
                 "timestamp",
-                "transaction",
+                "transactions",
                 "otc",
                 "ticker",
             ],
         )
         self.trg_bucket_connector.write_to_s3(
-            self.df_src.loc[0:0], "2024-06-05/2024-06-05_BINS_POLY13.csv", "csv"
-        )
-        self.trg_bucket_connector.write_to_s3(
-            self.df_src.loc[1:1], "2024-06-05/2024-06-05_BINS_POLY14.csv", "csv"
-        )
-        self.trg_bucket_connector.write_to_s3(
-            self.df_src.loc[2:2], "2024-06-05/2024-06-05_BINS_POLY15.csv", "csv"
+            self.df_src, "2024-06-05/2024-06-05_BINS_POLY13.csv", "csv"
         )
 
         self.df_trg = pd.DataFrame(

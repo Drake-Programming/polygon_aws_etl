@@ -13,7 +13,7 @@ class TestSourcePolygonConnector(unittest.TestCase):
             "high": [195.2000],
             "low": [194.5800],
             "close": [194.8300],
-            "volume": [118043.0],
+            "volume": [118043],
             "vwap": [194.8244],
             "timestamp": [1717574400000],
             "transactions": [2422],
@@ -52,7 +52,6 @@ class TestSourcePolygonConnector(unittest.TestCase):
         # Define the return value for the mock
         mock_list_aggs.return_value = fake_stock_data.make_stock_data(limit=1)
         result_df = connector.get_stocks(start_date, tickers)
-
         pdt.assert_frame_equal(result_df, self.expected_df)
 
 

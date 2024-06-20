@@ -53,7 +53,7 @@ class MetaFile:
         :param input_date: the processed date
         :param bucket_connector: a TargetBucketConnector instance in which the meta file will be updated
         """
-        logger.info(f"Updating meta file, inputting date {input_date}")
+        logger.debug(f"Updating meta file, inputting date {input_date}")
         # Creating an empty DataFrame using the meta file column names
         df_new = pd.DataFrame(
             columns=[

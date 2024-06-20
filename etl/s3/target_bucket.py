@@ -42,7 +42,7 @@ class TargetBucketConnector(BaseBucketConnector):
         :param decoding: decoding codes
         :returns: meta file in dataframe, returns empty dataframe if meta file does not exists
         """
-        self._logger.info(
+        self._logger.debug(
             f"Reading meta file '{self.meta_key}' in bucket '{self._bucket.name}'"
         )
         try:
@@ -145,6 +145,6 @@ class TargetBucketConnector(BaseBucketConnector):
         :param key:
         :return:
         """
-        self._logger.info(f"Writing file to {self._bucket.name} as {key}")
+        self._logger.debug(f"Writing file to {self._bucket.name} as {key}")
         self._bucket.put_object(Body=out_buffer.getvalue(), Key=key)
         return True
