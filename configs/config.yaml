@@ -58,7 +58,7 @@ target:
   trg_col_datetime: 'date_time'
   trg_col_ticker: 'stock_ticker'
   trg_dtypes:
-    stock_ticker: 'string'
+    stock_ticker: 'object'
     date_time: 'datetime64[ns]'
     opening_price: 'float64'
     closing_price: 'float64'

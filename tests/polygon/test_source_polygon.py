@@ -4,19 +4,6 @@ from unittest.mock import patch
 import pandas as pd
 import pandas.testing as pdt
 from tests.polygon.make_test_stock_data import MockStockData
-import yaml
-import argparse
-
-#  setup YAML
-parser = argparse.ArgumentParser(description="run polygon etl job")
-parser.add_argument(
-    "--config", help="a yaml configuration file", default="configs/config.yaml"
-)
-args = parser.parse_args()
-with open(args.config) as f:
-    config = yaml.safe_load(f)
-
-polygon_config = config["polygon"]
 
 
 class TestSourcePolygonConnector(unittest.TestCase):
@@ -32,7 +19,8 @@ class TestSourcePolygonConnector(unittest.TestCase):
             "transactions": [2422],
             "otc": [None],
             "ticker": ["AAPL"],
-        })
+        }
+    )
 
     @patch("etl.polygon.base_polygon.RESTClient")
     @patch("os.getenv", return_value="fake_api_key")

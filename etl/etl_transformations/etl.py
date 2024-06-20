@@ -16,12 +16,12 @@ class ETL:
     """
 
     def __init__(
-        self,
-        source_polygon: SourcePolygonConnector,
-        target_bucket: TargetBucketConnector,
-        meta_key: str,
-        source_args: ETLSourceConfig,
-        target_args: ETLTargetConfig,
+            self,
+            source_polygon: SourcePolygonConnector,
+            target_bucket: TargetBucketConnector,
+            meta_key: str,
+            source_args: ETLSourceConfig,
+            target_args: ETLTargetConfig,
     ):
         """
         Constructor for Polygon ETL pipeline
@@ -71,7 +71,7 @@ class ETL:
             return df, False
 
     def transform(
-        self, df: pd.DataFrame, transformed=False
+            self, df: pd.DataFrame, transformed=False
     ) -> Tuple[pd.DataFrame, bool]:
         """
         Apply Transformations to Extracted Data
@@ -99,21 +99,24 @@ class ETL:
         #  compute daily return
         self._logger.debug(f"Adding column {self.trg_args.trg_col_return}")
         df[self.trg_args.trg_col_return] = (
-            (df[self.src_args.src_col_close] - df[self.src_args.src_col_close].shift(1))
-            / df[self.src_args.src_col_close].shift(1)
-            * 100
+                (df[self.src_args.src_col_close] - df[self.src_args.src_col_close].shift(1))
+                / df[self.src_args.src_col_close].shift(1)
+                * 100
         )
+        # Fill NaN with a specific value (e.g., 0)
+        # df[self.trg_args.trg_col_return].fillna(0, inplace=True)
+        df.fillna({self.trg_args.trg_col_return: 0}, inplace=True)
         #  compute daily volatility
         self._logger.debug(f"Adding column {self.trg_args.trg_col_volatility}")
         df[self.trg_args.trg_col_volatility] = (
-            (df[self.src_args.src_col_high] - df[self.src_args.src_col_low])
-            / df[self.src_args.src_col_open]
-            * 100
+                (df[self.src_args.src_col_high] - df[self.src_args.src_col_low])
+                / df[self.src_args.src_col_open]
+                * 100
         )
         #  compute intraday range
         self._logger.debug(f"Adding column {self.trg_args.trg_col_intraday_range}")
         df[self.trg_args.trg_col_intraday_range] = (
-            df[self.src_args.src_col_high] - df[self.src_args.src_col_low]
+                df[self.src_args.src_col_high] - df[self.src_args.src_col_low]
         )
 
         # timestamp to date
@@ -155,7 +158,7 @@ class ETL:
         # Round each column
         for col in columns_to_round:
             cleaned_df.loc[:, col] = cleaned_df.loc[:, col].round(decimals=2)
-
+        #  Check and change schema
         df = Utils.schema_check(cleaned_df, self.trg_args)
 
         return df, False

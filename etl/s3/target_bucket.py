@@ -28,8 +28,12 @@ class TargetBucketConnector(BaseBucketConnector):
 
     prefix = "daily/"
 
-    def __init__(self, access_key_name, secret_access_key_name, bucket_name, bucket_region):
-        super().__init__(access_key_name, secret_access_key_name, bucket_name, bucket_region)
+    def __init__(
+        self, access_key_name, secret_access_key_name, bucket_name, bucket_region
+    ):
+        super().__init__(
+            access_key_name, secret_access_key_name, bucket_name, bucket_region
+        )
 
     def read_meta_file(self, decoding="utf-8") -> pd.DataFrame:
         """

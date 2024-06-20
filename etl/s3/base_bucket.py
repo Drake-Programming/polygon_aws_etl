@@ -18,7 +18,7 @@ class BaseBucketConnector(unittest.TestCase):
         access_key_name: str,
         secret_access_key_name: str,
         bucket_name: str,
-        bucket_region: str
+        bucket_region: str,
     ):
         """
         Constructor for S3BucketConnector
