@@ -67,7 +67,9 @@ class UnitTestETL(TestBaseETL):
         log_expected1 = f"Saving transformed data into target bucket {self.trg_key}"
         log_expected2 = f"Saved transformed data into target bucket {self.trg_key}"
         log_expected3 = f"Attempting to update meta file {self.meta_key}"
-        log_expected4 = "Failed to retrieve meta file, returning dataframe with specified columns"
+        log_expected4 = (
+            "Failed to retrieve meta file, returning dataframe with specified columns"
+        )
         log_expected5 = "Successfully updated meta file"
 
         # test logging output
