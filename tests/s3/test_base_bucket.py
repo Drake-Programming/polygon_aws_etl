@@ -36,7 +36,7 @@ class TestBaseBucketConnector(unittest.TestCase):
         #  Creating a bucket on the mocked s3
         self.s3_conn = boto3.resource(service_name="s3")
         self.s3_conn.create_bucket(
-            Bucket=config["s3_bucket_name"],
+            Bucket=self.config["s3_bucket_name"],
             CreateBucketConfiguration={
                 "LocationConstraint": self.config["s3_bucket_location"]
             },
@@ -55,9 +55,3 @@ class TestBaseBucketConnector(unittest.TestCase):
         for key in self.bucket.objects.all():
             key.delete()
         self.bucket.delete()
-        for key in self.bucket_config.keys():
-            del os.environ[key]
-
-
-if __name__ == "__main__":
-    unittest.main()
