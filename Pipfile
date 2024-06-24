@@ -16,6 +16,7 @@ jupyter = "*"
 coverage = "*"
 moto = "*"
 pytest = "*"
+memory-profiler = "*"
 
 [requires]
 python_version = "3.9"
