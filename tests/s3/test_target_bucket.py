@@ -50,6 +50,15 @@ class TestTargetBucketConnector(TestBaseBucketConnector):
         )
         self.assertTrue(df_result.equals(df_expected))
 
+    def test_read_object_wrong_file_format(self):
+        wrong_file_format = ''
+        log_expected = 'File format is not correct, needs to be CSV or PARQUET'
+
+        with self.assertLogs() as log:
+            self.trg_bucket_connector.read_object(self.test_parquet_key, wrong_file_format)
+            # log test after method execution
+            self.assertIn(log_expected, log.output[1])
+
     def test_write_to_s3_csv(self):
         """
         test write_to_s3 works for csv
@@ -107,6 +116,12 @@ class TestTargetBucketConnector(TestBaseBucketConnector):
             # log test after method execution
             self.assertIn(log_expected, log.output[0])
 
+    def test_write_to_s3_empty(self):
+        df_empty = pd.DataFrame
+        df_expected = None
+        df_result = self.trg_bucket_connector.write_to_s3(df_empty, self.test_parquet_key, self.test_parquet_format)
+        self.assertEqual(df_result, df_expected)
+
     def test_list_existing_dates(self):
         """
         test list_existing_dates returns correct date list
@@ -149,10 +164,10 @@ class TestTargetBucketConnector(TestBaseBucketConnector):
         # delete any existing meta file
         self.bucket.Object(key=self.meta_key).delete()
 
-        df_expcted = pd.DataFrame(columns=[self.date_col, self.timestamp_col])
+        df_expected = pd.DataFrame(columns=[self.date_col, self.timestamp_col])
         # method execution
         df_result = self.trg_bucket_connector.read_meta_file()
-        self.assertTrue(df_result.equals(df_expcted))
+        self.assertTrue(df_result.equals(df_expected))
 
 
 if __name__ == "__main__":

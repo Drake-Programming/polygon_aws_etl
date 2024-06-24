@@ -107,6 +107,9 @@ class TestMetaFile(TestBaseBucketConnector):
         with self.assertRaises(WrongMetaFileException):
             MetaFile.update_meta_file(date_new, self.trg_bucket_connector)
 
+    def test_update_meta_file_not_exists(self):
+        pass
+
     def test_date_in_meta_file(self):
         """
         test date_in_meta_file works

@@ -61,8 +61,5 @@ class Utils:
         """
         #  dtype convert
         logger.info("Converting dtypes of columns to specified types")
-        try:
-            df = df.astype(trg_args.trg_dtypes)
-        except Exception as e:
-            logger.error(f"Failed to convert dtypes: {e}")
+        df = df.astype(trg_args.trg_dtypes)
         return df

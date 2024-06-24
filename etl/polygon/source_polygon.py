@@ -28,7 +28,7 @@ class SourcePolygonConnector(BasePolygonConnector):
         tickers: List[str],
         end_date=today_date,
         timespan: str = "hour",
-    ) -> Dict:
+    ) -> pd.DataFrame:
         stock_objects = {}
         for stock in tickers:
             stock_objects[stock] = self._client.list_aggs(

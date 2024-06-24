@@ -4,17 +4,21 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-jupyter = "*"
 pandas = "*"
 boto3 = "*"
 setuptools = "*"
 polygon-api-client = "*"
 python-dotenv = "*"
 pyyaml = "*"
-black = "*"
 requests = "*"
+pipenv = "*"
+install = "*"
+pytest = "*"
 
 [dev-packages]
+jupyter = "*"
+coverage = "*"
+moto = {extras = ["s3"], version = "*"}
 
 [requires]
 python_version = "3.9"

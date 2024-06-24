@@ -12,7 +12,7 @@ class TestUtils(unittest.TestCase):
 
     def setUp(self):
         #  target config for testing purposes
-        trg_config = {
+        correct_trg_config = {
             "trg_prefix": "daily/",
             "trg_key_date_format": "%Y%m%d",
             "trg_format": "parquet",
@@ -51,8 +51,49 @@ class TestUtils(unittest.TestCase):
                 "intraday_range": "float64",
             },
         }
+
+        incorrect_trg_config = {
+            "trg_prefix": "daily/",
+            "trg_key_date_format": "%Y%m%d",
+            "trg_format": "parquet",
+            "trg_columns": [
+                "stock_ticker",
+                "date_time",
+                "opening_price",
+                "closing_price",
+                "low_price",
+                "high_price",
+                "traded_volume",
+                "daily_return",
+                "daily_volatility",
+                "intraday_range",
+            ],
+            "trg_col_open": "opening_price",
+            "trg_col_close": "closing_price",
+            "trg_col_low": "low_price",
+            "trg_col_high": "high_price",
+            "trg_col_volume": "traded_volume",
+            "trg_col_return": "daily_return",
+            "trg_col_volatility": "daily_volatility",
+            "trg_col_intraday_range": "intraday_range",
+            "trg_col_datetime": "date_time",
+            "trg_col_ticker": "stock_ticker",
+            "trg_dtypes": {
+                "stock_ticker": "object",
+                "date_time": "datetime64[ns]",
+                "open_price": "float64",
+                "closing_price": "float64",
+                "low_price": "float64",
+                "high_price": "float6",
+                "traded_volume": "int64",
+                "daily_return": "float64",
+                "daily_volatility": "float64",
+                "intraday_range": "float64",
+            },
+        }
         #  Schema using the config
-        self.test_schema = ETLTargetConfig(**trg_config)
+        self.test_schema = ETLTargetConfig(**correct_trg_config)
+        self.incorrect_test_schema = ETLTargetConfig(**incorrect_trg_config)
 
         #  dataframe with ints instead of floats
         self.df_ints = pd.DataFrame(

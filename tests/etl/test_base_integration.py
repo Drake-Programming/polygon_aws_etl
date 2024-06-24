@@ -73,6 +73,8 @@ class IntegrationTestETL(TestBaseETL):
         self.assertFalse(transformed)
         self.assertFalse(loaded)
         self.assertTrue(df_result.equals(self.df_trg))
+        df_result2 = self.etl.run()
+        self.assertTrue(df_result2.equals(self.df_trg))
 
 
 if __name__ == "__main__":

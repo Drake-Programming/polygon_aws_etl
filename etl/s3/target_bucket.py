@@ -61,10 +61,6 @@ class TargetBucketConnector(BaseBucketConnector):
                 "Failed to retrieve meta file, returning dataframe with specified columns"
             )
             df = pd.DataFrame(columns=[self.meta_date_col, self.meta_timestamp_col])
-
-        except Exception as e:
-            self._logger.error(f"Could not read meta file: {e}")
-            df = pd.DataFrame(columns=[self.meta_date_col, self.meta_timestamp_col])
         return df
 
     def read_object(
