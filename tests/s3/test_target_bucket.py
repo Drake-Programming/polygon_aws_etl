@@ -51,11 +51,13 @@ class TestTargetBucketConnector(TestBaseBucketConnector):
         self.assertTrue(df_result.equals(df_expected))
 
     def test_read_object_wrong_file_format(self):
-        wrong_file_format = ''
-        log_expected = 'File format is not correct, needs to be CSV or PARQUET'
+        wrong_file_format = ""
+        log_expected = "File format is not correct, needs to be CSV or PARQUET"
 
         with self.assertLogs() as log:
-            self.trg_bucket_connector.read_object(self.test_parquet_key, wrong_file_format)
+            self.trg_bucket_connector.read_object(
+                self.test_parquet_key, wrong_file_format
+            )
             # log test after method execution
             self.assertIn(log_expected, log.output[1])
 
@@ -119,8 +121,24 @@ class TestTargetBucketConnector(TestBaseBucketConnector):
     def test_write_to_s3_empty(self):
         df_empty = pd.DataFrame
         df_expected = None
-        df_result = self.trg_bucket_connector.write_to_s3(df_empty, self.test_parquet_key, self.test_parquet_format)
+        df_result = self.trg_bucket_connector.write_to_s3(
+            df_empty, self.test_parquet_key, self.test_parquet_format
+        )
         self.assertEqual(df_result, df_expected)
+
+    def test_wrong_file_format_exception_print(self):
+        """
+        Tests if the exception will print the proper string when called
+        :return:
+        """
+        file_format = "test_format"
+        log_expected = f"file format {file_format} not supported"
+
+        with self.assertRaises(WrongFileFormatException) as context:
+            self.trg_bucket_connector.write_to_s3(
+                self.test_df, self.test_csv_key, file_format
+            )
+        self.assertEqual(repr(context.exception), log_expected)
 
     def test_list_existing_dates(self):
         """

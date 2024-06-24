@@ -70,10 +70,11 @@ class IntegrationTestETL(TestBaseETL):
         df_extracted, transformed = self.etl.extract()
         df_transformed, loaded = self.etl.transform(df_extracted)
         df_result = self.etl.load(df_transformed)
+        df_result2 = self.etl.run()
+
         self.assertFalse(transformed)
         self.assertFalse(loaded)
         self.assertTrue(df_result.equals(self.df_trg))
-        df_result2 = self.etl.run()
         self.assertTrue(df_result2.equals(self.df_trg))
 
 

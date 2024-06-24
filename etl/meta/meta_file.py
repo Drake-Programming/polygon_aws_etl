@@ -65,17 +65,11 @@ class MetaFile:
         df_new[MetaFileConfig.META_TIMESTAMP_COL.value] = [
             datetime.today().strftime(MetaFileConfig.META_TIMESTAMP_FORMAT.value)
         ]
-        try:
-            # If meta file exists -> union DataFrame of old and new metadata is created
-            df_old = bucket_connector.read_meta_file()
-            if collections.Counter(df_old.columns) != collections.Counter(
-                df_new.columns
-            ):
-                raise WrongMetaFileException
-            df_all = pd.concat([df_old, df_new])
-        except bucket_connector.session.client("s3").exceptions.NoSuchKey:
-            # No meta file exists -> only the new data is used
-            df_all = df_new
+        # If meta file exists -> union DataFrame of old and new metadata is created
+        df_old = bucket_connector.read_meta_file()
+        if collections.Counter(df_old.columns) != collections.Counter(df_new.columns):
+            raise WrongMetaFileException
+        df_all = pd.concat([df_old, df_new])
         # Writing to S3
         bucket_connector.write_to_s3(
             df_all,

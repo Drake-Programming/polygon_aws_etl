@@ -6,19 +6,16 @@ name = "pypi"
 [packages]
 pandas = "*"
 boto3 = "*"
-setuptools = "*"
 polygon-api-client = "*"
 python-dotenv = "*"
 pyyaml = "*"
-requests = "*"
-pipenv = "*"
-install = "*"
-pytest = "*"
+pyarrow = "*"
 
 [dev-packages]
 jupyter = "*"
 coverage = "*"
-moto = {extras = ["s3"], version = "*"}
+moto = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.9"
