@@ -3,6 +3,7 @@ import boto3
 import os
 import unittest
 from dotenv import load_dotenv, find_dotenv
+import profile
 
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)

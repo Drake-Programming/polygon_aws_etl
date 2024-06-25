@@ -6,7 +6,7 @@ s3:
 polygon:
   polygon_key: 'polygon_api_key'
 source:
-  src_input_date: '2024-05-28'
+  src_input_date: '2024-06-16'
   src_input_date_format: '%Y-%m-%d'
   src_tickers:
     [

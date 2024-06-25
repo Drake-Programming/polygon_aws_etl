@@ -4,7 +4,6 @@ from etl.etl_transformations.config import ETLTargetConfig, ETLSourceConfig
 from etl.meta.meta_file import MetaFile
 from typing import Tuple
 from etl.common.utils import Utils
-
 import logging
 import pandas as pd
 from datetime import datetime
