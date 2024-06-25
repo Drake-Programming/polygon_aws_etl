@@ -9,7 +9,7 @@ import unittest
 
 class TestTargetBucketConnector(TestBaseBucketConnector):
     """
-    test target bucket connector methdos
+    test target bucket connector methods
     """
 
     # for test date listing
@@ -31,6 +31,10 @@ class TestTargetBucketConnector(TestBaseBucketConnector):
     test_date = datetime.today().strftime(MetaFileConfig.META_DATE_FORMAT.value)
 
     def test_read_object_csv(self):
+        """
+        test the read object with an expected csv result
+        :return:
+        """
         df_expected = self.test_df
         self.trg_bucket_connector.write_to_s3(
             df_expected, self.test_csv_key, self.test_csv_format
@@ -41,6 +45,10 @@ class TestTargetBucketConnector(TestBaseBucketConnector):
         self.assertTrue(df_result.equals(df_expected))
 
     def test_read_object_parquet(self):
+        """
+        test the read object with an expected parquet result
+        :return:
+        """
         df_expected = self.test_df
         self.trg_bucket_connector.write_to_s3(
             df_expected, self.test_parquet_key, self.test_parquet_format
@@ -51,6 +59,10 @@ class TestTargetBucketConnector(TestBaseBucketConnector):
         self.assertTrue(df_result.equals(df_expected))
 
     def test_read_object_wrong_file_format(self):
+        """
+        test the read object can detect a wrong file format
+        :return:
+        """
         wrong_file_format = ""
         log_expected = "File format is not correct, needs to be CSV or PARQUET"
 
@@ -119,6 +131,10 @@ class TestTargetBucketConnector(TestBaseBucketConnector):
             self.assertIn(log_expected, log.output[0])
 
     def test_write_to_s3_empty(self):
+        """
+        tests if write to s3 can detect an empty pandas dataframe
+        :return:
+        """
         df_empty = pd.DataFrame
         df_expected = None
         df_result = self.trg_bucket_connector.write_to_s3(

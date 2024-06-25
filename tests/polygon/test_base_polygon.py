@@ -6,10 +6,19 @@ from etl.polygon.base_polygon import BasePolygonConnector
 
 
 class TestBasePolygonConnector(unittest.TestCase):
+    """
+    Tests the connections for the base polygon
+    """
 
     @patch("etl.polygon.base_polygon.RESTClient")  # Mock the RESTClient
     @patch("os.getenv", return_value="fake_api_key")
     def test_init(self, mock_getenv, mock_rest_client):
+        """
+        Tests if the base polygon can connect to the polygon REST api
+        :param mock_getenv:
+        :param mock_rest_client:
+        :return:
+        """
         #  Test Initialization
         connector = BasePolygonConnector("POLYGON_API_KEY")
         #  Test Assertions

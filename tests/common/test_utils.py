@@ -11,6 +11,10 @@ class TestUtils(unittest.TestCase):
     """
 
     def setUp(self):
+        """
+        Sets up the configs, dataframes, and schemas for testing
+        :return:
+        """
         #  target config for testing purposes
         correct_trg_config = {
             "trg_prefix": "daily/",

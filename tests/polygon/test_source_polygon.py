@@ -7,6 +7,9 @@ from tests.polygon.make_test_stock_data import MockStockData
 
 
 class TestSourcePolygonConnector(unittest.TestCase):
+    """
+    Tests the Source Polygon Connector
+    """
     expected_df = pd.DataFrame(
         {
             "open": [194.990],
@@ -25,6 +28,12 @@ class TestSourcePolygonConnector(unittest.TestCase):
     @patch("etl.polygon.base_polygon.RESTClient")
     @patch("os.getenv", return_value="fake_api_key")
     def test_dict_to_df(self, mock_getenv, mock_rest_client):
+        """
+        Tests the dict_to_df method with an expected result
+        :param mock_getenv:
+        :param mock_rest_client:
+        :return:
+        """
         connector = SourcePolygonConnector("POLYGON_API_KEY")
         fake_stock_data = MockStockData()
 
@@ -38,7 +47,7 @@ class TestSourcePolygonConnector(unittest.TestCase):
     @patch("os.getenv", return_value="fake_api_key")
     def test_get_stocks(self, mock_getenv, mock_list_aggs):
         """
-        Tests the get_stocks method of SourcePolygonConnector
+        Tests the get_stocks method with an expected result
         :param mock_list_aggs:
         :return:
         """
