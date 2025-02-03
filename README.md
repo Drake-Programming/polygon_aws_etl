@@ -27,7 +27,7 @@ The architecture is designed to handle batch updates while maintaining cost effi
 
 - **Languages**: Python (ETL orchestration and transformation logic)
 - **API**: Polygon, boto3, moto
-- **Cloud Services**: AWS S3, Lambda, Glue, and CloudWatch
+- **Cloud Services**: AWS S3, AWS SDK
 - **Data Processing**: Pandas for transformations
 
 ## Prerequisites
